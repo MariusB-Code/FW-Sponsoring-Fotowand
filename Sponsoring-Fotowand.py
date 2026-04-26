@@ -16,28 +16,30 @@ CANVAS_H_MM = 2270 # Fotowandhöhe total in mm
 
 SEAM_ALLOWANCE = 10 # Nahtzugabe in mm
 MARGIN_MIN_MM = 50 # minimale Marge (mininaler Abstand der Bilder vom Rand) in mm
-MARGIN_ADD_MM = 20 # Zusätzliche Marge vom Rand in mm
+MARGIN_ADD_MM = 40 # Zusätzliche Marge vom Rand in mm
 SIDE_W_MM = 290 # Falls die Druckerei die Seiten der messewand bedruckt, hier eingeben
 
-COLS = 12   # Anzahl Spalten (Anz. Bilder horizontal) # mit 12 passen die Felder
+COLS = 13   # Anzahl Spalten (Anz. Bilder horizontal) # mit 12 passen die Felder
 ROWS = 11   # Anzahl Zeilen (Anz. Bilder vertikal) 
 # Werte Frackwochen:
-# FW26: Fotowand 4x3 mit seitenfläche, COLS = 12, ROWS = 11 (COLS = Anz. Sponsoren-Logos+2)
+# FW26: Fotowand 4x3 mit seitenfläche, COLS = 13, ROWS = 11 (COLS = Anz. Sponsoren-Logos+2)
 
 # Einstellung ob und wie gross (in Zellen) die Mittlere Overlay-Zelle sein soll
 # ----------------------------------------------------------
 center_cell_en = True   # Enable für in der Mitte der Wand zentrierte Zelle
-center_cells = [2,3]    # Breite und Höhe der Zentralen Zellen anhand der normalen Zellengrösse
+center_cells = [3,3]    # Breite und Höhe der Zentralen Zellen anhand der normalen Zellengrösse
+# Werte Frackwochen:
+# FW26: Fotowand 13x11 Zellen, [3,3]
 
 # Einstellungen: Debugging-Modus und PDF-Export-enable
 # ----------------------------------------------------------
 debug_modus = True  # Modus zum debuggen (ohne dass Bilder eingefügt werden)
-pdf_export_en = False # Wenn "True": Exportiert das generierte Collage-Bild als PDF (nur wenn debug_modus = False)
+pdf_export_en = True # Wenn "True": Exportiert das generierte Collage-Bild als PDF (nur wenn debug_modus = False)
 
 # Grössen der Bilder auf der fotowand (Platinsponsoren haben grössere Bilder als Goldsponsoren)
 # ----------------------------------------------------------
 scale_img_large = 1.0 # Skalierung relativ zu Zelle (grösste Dimension)
-scale_img_small = 0.5 # Skalierung relativ zu Zelle (grösste Dimension)
+scale_img_small = 0.6 # Skalierung relativ zu Zelle (grösste Dimension)
 
 # Weitere Parameter: Margin (Bider zu Rand) sollte genug gross sein und Gap
 # ----------------------------------------------------------
@@ -198,8 +200,8 @@ for row in range(ROWS):
 if (center_cell_en):
     #Grösse der mittleren zelle berechnen
     gap_px = mm_to_px(GAP_MM)
-    center_cell_w_px = int((cell_w_px+gap_px)*center_cells[0])
-    center_cell_h_px = int((cell_h_px+gap_px)*center_cells[1])
+    center_cell_w_px = int((cell_w_px*center_cells[0])+(gap_px*(max(center_cells[0]-1,0))))
+    center_cell_h_px = int((cell_h_px*center_cells[1])+(gap_px*(max(center_cells[1]-1,0))))
     #Position der mittleren Zelle berechnen
     center_x_px = (mm_to_px(CANVAS_W_MM) - center_cell_w_px) // 2
     center_y_px = (mm_to_px(CANVAS_H_MM) - center_cell_h_px) // 2
