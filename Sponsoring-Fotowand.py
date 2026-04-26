@@ -33,7 +33,7 @@ center_cells = [3,3]    # Breite und Höhe der Zentralen Zellen anhand der norma
 
 # Einstellungen: Debugging-Modus und PDF-Export-enable
 # ----------------------------------------------------------
-debug_modus = True  # Modus zum debuggen (ohne dass Bilder eingefügt werden)
+debug_modus = False  # Modus zum debuggen (ohne dass Bilder eingefügt werden)
 pdf_export_en = True # Wenn "True": Exportiert das generierte Collage-Bild als PDF (nur wenn debug_modus = False)
 
 # Grössen der Bilder auf der fotowand (Platinsponsoren haben grössere Bilder als Goldsponsoren)
@@ -122,11 +122,11 @@ small_imgs = list(SMALL_DIR.glob("*.*"))
 cell_images = []
 # Pfade und Skalierung Grosser Bilder in Array verpacken
 for p in large_imgs:
-    #cell_images.append((p, scale_img_large))
-    if (p==1):      # Stage-Sound-Logo leicht verkleinern
-        cell_images.append((p,0.9))
-    else:
-        cell_images.append((p,scale_img_large))
+    cell_images.append((p, scale_img_large))
+#    if (p==1):      # Stage-Sound-Logo leicht verkleinern
+#        cell_images.append((p,0.9))
+#    else:
+#        cell_images.append((p,scale_img_large))
     
 # Pfade und Skalierung kleiner Bilder in Array verpacken
 for p in small_imgs:
@@ -200,8 +200,8 @@ for row in range(ROWS):
 if (center_cell_en):
     #Grösse der mittleren zelle berechnen
     gap_px = mm_to_px(GAP_MM)
-    center_cell_w_px = int((cell_w_px*center_cells[0])+(gap_px*(max(center_cells[0]-1,0))))
-    center_cell_h_px = int((cell_h_px*center_cells[1])+(gap_px*(max(center_cells[1]-1,0))))
+    center_cell_w_px = int((cell_w_px*center_cells[0])+(gap_px*(center_cells[0]-1)))
+    center_cell_h_px = int((cell_h_px*center_cells[1])+(gap_px*(center_cells[1]-1)))
     #Position der mittleren Zelle berechnen
     center_x_px = (mm_to_px(CANVAS_W_MM) - center_cell_w_px) // 2
     center_y_px = (mm_to_px(CANVAS_H_MM) - center_cell_h_px) // 2
