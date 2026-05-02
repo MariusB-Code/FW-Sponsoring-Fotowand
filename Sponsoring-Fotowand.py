@@ -11,25 +11,25 @@ import random
 # ----------------------------------------------------------
 # Grundeinstellungen: Canvas-Grösse (Daten der Druckerei)
 # ----------------------------------------------------------
-CANVAS_W_MM = 3680 # Fotowandbreite total in mm
-CANVAS_H_MM = 2270 # Fotowandhöhe total in mm
+CANVAS_W_MM = 3420 # Fotowandbreite total in mm
+CANVAS_H_MM = 1750 # Fotowandhöhe total in mm
 
 SEAM_ALLOWANCE = 10 # Nahtzugabe in mm
-MARGIN_MIN_MM = 50 # minimale Marge (mininaler Abstand der Bilder vom Rand) in mm
-MARGIN_ADD_MM = 40 # Zusätzliche Marge vom Rand in mm
-SIDE_W_MM = 290 # Falls die Druckerei die Seiten der messewand bedruckt, hier eingeben
+MARGIN_MIN_MM = 50 # minimale Marge (mininaler Abstand der Bilder vom Rand) in mm z.B. für Ösen
+MARGIN_ADD_MM = 20 # Zusätzliche Marge vom Rand in mm
+SIDE_W_MM = 0 # Falls die Druckerei die Seitenmasse angibt, z.B. für Messewand, hier eingeben
 
-COLS = 13   # Anzahl Spalten (Anz. Bilder horizontal) # mit 12 passen die Felder
-ROWS = 11   # Anzahl Zeilen (Anz. Bilder vertikal) 
+COLS = 14   # Anzahl Spalten (Anz. Bilder horizontal)
+ROWS = 8   # Anzahl Zeilen (Anz. Bilder vertikal) 
 # Werte Frackwochen:
-# FW26: Fotowand 4x3 mit seitenfläche, COLS = 13, ROWS = 11 (COLS = Anz. Sponsoren-Logos+2)
+# FW26: Bauzaunblache COLS = 14, ROWS = 8 (COLS = Anz. Sponsoren-Logos+2)
 
 # Einstellung ob und wie gross (in Zellen) die Mittlere Overlay-Zelle sein soll
 # ----------------------------------------------------------
 center_cell_en = True   # Enable für in der Mitte der Wand zentrierte Zelle
-center_cells = [3,3]    # Breite und Höhe der Zentralen Zellen anhand der normalen Zellengrösse
+center_cells = [2,2]    # Breite und Höhe der Zentralen Zellen anhand der normalen Zellengrösse
 # Werte Frackwochen:
-# FW26: Fotowand 13x11 Zellen, [3,3]
+# FW26: Fotowand [2,2]
 
 # Einstellungen: Debugging-Modus und PDF-Export-enable
 # ----------------------------------------------------------
@@ -38,13 +38,13 @@ pdf_export_en = True # Wenn "True": Exportiert das generierte Collage-Bild als P
 
 # Grössen der Bilder auf der fotowand (Platinsponsoren haben grössere Bilder als Goldsponsoren)
 # ----------------------------------------------------------
-scale_img_large = 1.0 # Skalierung relativ zu Zelle (grösste Dimension)
-scale_img_small = 0.6 # Skalierung relativ zu Zelle (grösste Dimension)
+scale_img_large = 1 # Skalierung relativ zu Zelle (grösste Dimension)
+scale_img_small = 0.5 # Skalierung relativ zu Zelle (grösste Dimension)
 
 # Weitere Parameter: Margin (Bider zu Rand) sollte genug gross sein und Gap
 # ----------------------------------------------------------
 MARGIN_MM = SEAM_ALLOWANCE+MARGIN_MIN_MM+MARGIN_ADD_MM # Margin (Abstand der Bilder vom Rand)
-GAP_MM = MARGIN_MM/2 # Abstand der Bilderzellen in mm
+GAP_MM = MARGIN_MM/3 # Abstand der Bilderzellen in mm
 DPI = 300 # wird für Konvertierung vom mm zu pixel benötigt
 
 # Pfade zum FW-Logo (Mitte), Platin-Logos (gross) & Gold-Logos (klein)
@@ -64,6 +64,9 @@ usable_h_mm = CANVAS_H_MM-(2*(MARGIN_MM))-(ROWS-1)*GAP_MM
 CELL_W_MM = usable_w_mm / COLS
 CELL_H_MM = usable_h_mm / ROWS
 print(f"Zellgrösse (bxh): {CELL_W_MM:.1f} x {CELL_H_MM:.1f} mm")
+print(f"vgl. A5 quer (bxh): 210 x 148 mm")
+if(center_cell_en):
+    print(f"Grösse Mittelzelle (bxh): {center_cells[0]*CELL_W_MM:.1f} x {center_cells[1]*CELL_H_MM:.1f} mm")
 
 # ----------------------------------------------------------
 # Funktion: mm zu Pixel mit dpi-Wert
@@ -122,11 +125,11 @@ small_imgs = list(SMALL_DIR.glob("*.*"))
 cell_images = []
 # Pfade und Skalierung Grosser Bilder in Array verpacken
 for p in large_imgs:
-    cell_images.append((p, scale_img_large))
-#    if (p==1):      # Stage-Sound-Logo leicht verkleinern
-#        cell_images.append((p,0.9))
-#    else:
-#        cell_images.append((p,scale_img_large))
+    #cell_images.append((p, scale_img_large))
+    if (p==1):      # Stage-Sound-Logo leicht verkleinern
+        cell_images.append((p,0.9))
+    else:
+        cell_images.append((p,scale_img_large))
     
 # Pfade und Skalierung kleiner Bilder in Array verpacken
 for p in small_imgs:
@@ -251,14 +254,26 @@ if(debug_modus and (SIDE_W_MM>0)):
 # Speichern und zeigen
 # ----------------------------------------------------------
 if(debug_modus):
-    canvas.save("raster_debug_auto_cells.png", dpi=(DPI, DPI))
+    try:
+        canvas.save("debug_output.png", dpi=(DPI, DPI))
+    except:
+        print(f"\033[0;31;40m Fehler bei Ausgabe von Bild: debug_putput.png. Bitte bestehendes Bild manuell löschen\033[0;0m")
     
 else:
-    canvas.save("Fotowand.png", dpi=(DPI, DPI))
+    try:
+        canvas.save("Fotowand.png", dpi=(DPI, DPI))
+    except:
+        print(f"\033[0;31;40m Fehler bei Ausgabe von Bild: Fotowand.png. Bitte bestehendes Bild manuell löschen\033[0;0m")
 
 canvas.show()
 
 #als PDF speichern
 if(pdf_export_en and not debug_modus):
     # ZUM KORREKTEN EXPORT MUSS DER CANVAS GLEICH GROSS WIE DIE SOLL-ENDGRÖSSE DER DATEI SEIN!!!
-    canvas.save("Fotowand_FW.pdf", "PDF", dpi=(DPI, DPI))
+    try:
+        canvas.save("Fotowand.pdf", "PDF", dpi=(DPI, DPI))
+    except:
+        print(f"\033[0;31;40m Fehler bei Ausgabe von PDF: Fotowand.pdf. Bitte bestehendes PDF manuell löschen\033[0;0m")
+
+canvas.show()
+
