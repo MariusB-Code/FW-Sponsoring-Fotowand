@@ -36,10 +36,10 @@ center_cells = [2,2]    # Breite und Höhe der Zentralen Zellen anhand der norma
 debug_modus = False  # Modus zum debuggen (ohne dass Bilder eingefügt werden)
 pdf_export_en = True # Wenn "True": Exportiert das generierte Collage-Bild als PDF (nur wenn debug_modus = False)
 
-# Grössen der Bilder auf der fotowand (Platinsponsoren haben grössere Bilder als Goldsponsoren)
+# Grössen der Bilder auf der Fotowand (Platinsponsoren haben grössere Bilder als Goldsponsoren)
 # ----------------------------------------------------------
-scale_img_large = 1 # Skalierung relativ zu Zelle (grösste Dimension)
-scale_img_small = 0.5 # Skalierung relativ zu Zelle (grösste Dimension)
+scale_img_large = 1.0 # Skalierung relativ zu Zelle (grösste Dimension)
+scale_img_small = 0.6 # Skalierung relativ zu Zelle (grösste Dimension)
 
 # Weitere Parameter: Margin (Bider zu Rand) sollte genug gross sein und Gap
 # ----------------------------------------------------------
@@ -124,16 +124,26 @@ small_imgs = list(SMALL_DIR.glob("*.*"))
 # Pfade und Skalierung der Sponsorenbilder
 cell_images = []
 # Pfade und Skalierung Grosser Bilder in Array verpacken
+i=0
 for p in large_imgs:
     #cell_images.append((p, scale_img_large))
-    if (p==1):      # Stage-Sound-Logo leicht verkleinern
-        cell_images.append((p,0.9))
+    if (i==111):      #MUSS MANUELL VERÄNDERT WERDEN! AKTUELL IST HIER EIN SINNLOS GROSSER INDEX! IM SPETIFISCHEN FALL
+        cell_images.append((p,0.95))
     else:
         cell_images.append((p,scale_img_large))
+    i+=1
     
 # Pfade und Skalierung kleiner Bilder in Array verpacken
+i=0
 for p in small_imgs:
-    cell_images.append((p,scale_img_small))
+    #cell_images.append((p,scale_img_small))
+    if (i==222):    #MUSS MANUELL VERÄNDERT WERDEN! AKTUELL IST HIER EIN SINNLOS GROSSER INDEX! IM SPETIFISCHEN FALL
+        cell_images.append((p,0.5))
+    elif (i==444):  #MUSS MANUELL VERÄNDERT WERDEN! AKTUELL IST HIER EIN SINNLOS GROSSER INDEX! IM SPETIFISCHEN FALL
+        cell_images.append((p,0.8))
+    else: 
+        cell_images.append((p,scale_img_small))
+    i+=1
 
 # Pfad und Skalierung des als Zentralen Bildes
 center_image = []
@@ -275,5 +285,5 @@ if(pdf_export_en and not debug_modus):
     except:
         print(f"\033[0;31;40m Fehler bei Ausgabe von PDF: Fotowand.pdf. Bitte bestehendes PDF manuell löschen\033[0;0m")
 
-canvas.show()
+#canvas.show()
 
